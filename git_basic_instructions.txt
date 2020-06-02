@@ -1,0 +1,96 @@
+
+
+There is a nice chapter by Jesus Fernandez Villaverde about Git here: 
+https://www.sas.upenn.edu/~jesusfv/Chapter_HPC_5_Git.pdf
+It is probably more detail than you need...
+
+
+ ##### INSTALLATION #####
+
+Steps:
+
+- sign up at github.com
+- send me your username
+- my account is github.com/austinbean
+- the repository is github.com/austinbean/team_production
+- once I have your username I will add you as a member.
+
+I don't know if you are Mac or PC users.  These instructions should work for Mac, but will be quite similar for PC vversions, I imagine.
+
+- If you are on a PC, you should go here: https://git-scm.com/download/win to download Git.
+- If you are on a Mac, just open a terminal, type "git --version" and then hit enter.  It will prompt you automatically to install XCode, which includes git.
+- There are desktop versions of this software.  I am less familiar with them.
+
+Suppose that it is installed...
+Navigate (easiest via a terminal or the command line) to whatever folder you want to keep the project in, then type "git clone https://github.com/austinbean/sumr2020.git"
+
+- This should copy the current master version to your local machine.
+
+
+
+#### USAGE ######
+
+Work flow... a (broadly accurate) summary:
+
+- There is a "master" version of the project which lives on the website
+- Your computer will (at your command (TBexplained)) make sure the local version is the same as the "master" version
+- When you want to change something, you create a version of the current "master" (this is called a "branch")
+- You make your edits, make sure they work, whatever.
+- Then you tell the program to incorporate your fixes into the master version ("merging" a "branch")
+- Now there is a new "master" version containing your edits.
+
+
+Details:
+- When you want to start editing, always navigate to the folder containing the project file and type "git pull".  It will either say "already up to date" or get the most recent version.
+- When you want to make an edit, you do: git checkout -b name_of_new_branch -> the "-b" creates a new "branch" which you give some name.
+- Make your edits.  They work.  Great.  Save the file.
+
+If you create a new file and want to commit then 'add' it first using git add filename.ext 
+2. git commit filename.ext -m “adding a new file”
+3. git push origin master 
+
+
+	# Committing
+- Then you need to tell git about them.  This is called "committing"
+- Each "commit" comes with a "message".  The message says what you did.  (The system also records who did it.)
+	- You can edit multiple files and commit them separately OR do it all at once.
+- You are (broadly speaking) going to type (without the double quotes around the next command, but with the single quotes aroudn the message) ""git commit some_filename_which_you_edited_including_the_extension -m "this is what I did to the file I edited...." ""
+- "-m" means "What follows in quotation marks is my 'commit message' where I will describe what I did"
+- This is obligatory and should be reasonable detailed, so that your coauthors can tell what you did.
+- If you edited multiple files and want to save them all at once, you can replace  some_filename_..._etc above with "-a" (no quotes) which means "all"
+
+	# Merging.
+- You made some good edits and want to make sure your coauthors have access to the latest and greatest version.
+- This is accomplished by "merging" your "branch" back into "master"
+- You first SWITCH back to the "master" branch, then tell your computer to merge your local copy of the branch into your local copy of the "master"
+- You do this by executing the following commands:
+	git checkout master
+	git merge your_descriptive_branch_name
+- Then you "push" your new, improved file to the website:
+	git push origin master
+- (You can if you need to push copies of branches to the website too.)
+- Why is this nice?  Atul, Austin and Steve can work simultaneously *in different parts* of the same file on their pown personal machines, merge their local branches back into their local master, then push the master to the server, and it will combine all of the local masters into a single master reflecting all of the changes made locally.  
+- Cool, no?
+
+	# One thing to do to give you some intuition about how the program is working.
+- Do the following: git checkout -b my_new_branch
+- Edit some file.  Save it.
+- Now from the command line, do: git checkout master.
+- Open the file you just edited.  Do you see your changes?
+- Do: git checkout my_new_branch
+- Look at your file again.
+- Now do: 
+	git checkout master
+	git merge my_new_branch
+- Look at your file again.
+
+	# Other useful facts
+- You can work on multiple branches at the same time.  
+- Multiple people can work on the same branch at the same time.
+- Hopefully these things are not necessary!
+
+
+Key Points:
+1.  Always start with git pull before making any edits - this makes sure you have the most recent version.
+2.  Make major changes on branches.  Branches are free.
+3.  Merge your branches when you are done with your edits.
