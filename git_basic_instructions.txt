@@ -12,7 +12,7 @@ Steps:
 - sign up at github.com
 - send me your username
 - my account is github.com/austinbean
-- the repository is github.com/austinbean/team_production
+- the repository is github.com/austinbean/sumr2020
 - once I have your username I will add you as a member.
 
 I don't know if you are Mac or PC users.  These instructions should work for Mac, but will be quite similar for PC vversions, I imagine.
