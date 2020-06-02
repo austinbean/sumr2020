@@ -69,7 +69,7 @@ If you create a new file and want to commit then 'add' it first using git add fi
 - Then you "push" your new, improved file to the website:
 	git push origin master
 - (You can if you need to push copies of branches to the website too.)
-- Why is this nice?  Atul, Austin and Steve can work simultaneously *in different parts* of the same file on their pown personal machines, merge their local branches back into their local master, then push the master to the server, and it will combine all of the local masters into a single master reflecting all of the changes made locally.  
+- Why is this nice? Austin, Rachel and Mousa can work simultaneously *in different parts* of the same file on their pown personal machines, merge their local branches back into their local master, then push the master to the server, and it will combine all of the local masters into a single master reflecting all of the changes made locally.  
 - Cool, no?
 
 	# One thing to do to give you some intuition about how the program is working.
