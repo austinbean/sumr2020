@@ -94,3 +94,5 @@ Key Points:
 1.  Always start with git pull before making any edits - this makes sure you have the most recent version.
 2.  Make major changes on branches.  Branches are free.
 3.  Merge your branches when you are done with your edits.
+
+Rachel here, making a test commit.
