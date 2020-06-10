@@ -96,4 +96,4 @@ Key Points:
 3.  Merge your branches when you are done with your edits.
 
 Rachel here, making a test commit.
-Another test commit has been made by Mousa.
+Another test commit has been made by Mousa. Another one.
