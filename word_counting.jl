@@ -4,7 +4,7 @@
 using CSV
 using DataFrames
 
-data = CSV.file("very_fake_diet_data.csv") |> DataFrame
+data = CSV.read("very_fake_diet_data.csv") |> DataFrame
 
 function Counter(d::DataFrame)
 	outp = Dict{String, Int64}()
