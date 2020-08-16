@@ -3,8 +3,12 @@
 
 
 ####### Notes for New User:
-    # Change f_path to filepath of csv file with data in first line under training_model function ("./data_labeled.csv")
+    # Change f_path to filepath of csv file with data
+        # in first line under training_model function ("./data_labeled.csv")
     # Under FILES TO INCLUDE, change the filepaths to match your computer
+    # Under training_model() function, change the filepath for the 1 pdf and 
+        # 2 csvs (test_loss and rmse) that will be saved to your desired folder
+        # The pdf filepath is in the line beginning with savefig(....)
 
 using Pkg
 using CSV
@@ -163,29 +167,39 @@ function training_model()
         append!(model_prediction,  model(prediction_arr[i], scanner, encoder))
     end
     real = getindex.(test_data, 2)
-    
-    #Create histogram of Results vs Model Prediction -> changes this to  percent accurate later
-    histogram(model_results.Reality, bins = 10:5:maximum(model_results.Reality), label  = "Real Values")
-    histogram!(model_results.Prediction, bins = 0:1:(maximum(model_results.Prediction)+1), 
-            label = "Model Predictions", xlabel = "Value (Ounces of Milk)", ylabel = "Number of Occurances", 
-            title = "RNN Model Predictions vs Real Value")
-    
+
     #Export csv of data of predictions for histogram for outside-function use
     modelAccuracy = DataFrame()
     modelAccuracy.Prediction = model_prediction
     modelAccuracy.Reality = real
-    CSV.write("modelResults.csv", modelAccuracy)
+    #Change file path here
+    CSV.write("/Users/rachelwu/Desktop/SUMR/Bean/rnnModelResults.csv", modelAccuracy)
+
+    #Create histogram of Results vs Model Prediction -> changes this to  percent accurate later
+    Plots.histogram(modelAccuracy.Reality, bins = 10:5:maximum(modelAccuracy.Reality), label  = "Real Values")
+    Plots.histogram!(modelAccuracy.Prediction, bins = 0:1:(maximum(modelAccuracy.Prediction)+1), 
+            label = "Model Predictions", xlabel = "Value (Ounces of Milk)", ylabel = "Number of Occurances", 
+            title = "RNN Model Predictions vs Real Value")
+    savefig("/Users/rachelwu/Desktop/SUMR/Bean/histogram.pdf")
     
     #Export csv for loss values for each training round
     df = DataFrame()
     df.EpochNum = round_num
     df.LossVals = loss_values
-    CSV.write("test_loss.csv", df)
+    #Change file path here
+    CSV.write("/Users/rachelwu/Desktop/SUMR/Bean/test_loss.csv", df)
+
+    #Plot the loss function
+    x = df.EpochNum; y = df.LossVals; # These are the plotting data
+    plot(x, y, xlabel = "Number of Times Trained", ylabel = "Loss Function",
+        title = "Plotting the Loss Function of the RNN Model", legend = false)
+    savefig("/Users/rachelwu/Desktop/SUMR/Bean/lossFxnPlot.pdf")
     
     #Export csv with the lowest root mean squared value from training
     export_RMSE = DataFrame()
-    export_RMSE.RMSE_val = minimum(loss_df.LossVals)
-    CSV.write("rmse.csv", export_RMSE)
+    export_RMSE.RMSE_val = minimum(df.LossVals)
+    #Change file path here
+    CSV.write("/Users/rachelwu/Desktop/SUMR/Bean/rmse.csv", export_RMSE)
 
 end
 
