@@ -1,6 +1,10 @@
+#Author: Rachel Wu
+#8/15/20
+
+
 ####### Notes for New User:
-	# Change f_path to filepath of csv file with data
-	# Under FILES TO INCLUDE, change the filepaths to match your computer
+    # Change f_path to filepath of csv file with data in first line under training_model function ("./data_labeled.csv")
+    # Under FILES TO INCLUDE, change the filepaths to match your computer
 
 using Pkg
 using CSV
@@ -12,30 +16,26 @@ using Random
 Pkg.add("Parameters")
 using Parameters: @with_kw
 using Embeddings
+using Embeddings: EmbeddingTable
 using Functors
 using Plots
 Pkg.add("GR")
 
-f_path = "/Users/rachelwu/Desktop/very_fake_diet_data.csv"
-#Change this to ("./data_labeled.csv")
 
 # -- FILES TO INCLUDE -- #
 include("/Users/rachelwu/Desktop/punctuation_strip.jl")
 include("/Users/rachelwu/Desktop/SUMR/Bean/rnn_embeddings.jl")
 
-# -- Constants -- #
-const embed_table = load_embeddings(GloVe)
-const get_word_index = Dict(word=>ii for (ii,word) in enumerate(embed_table.vocab))
-
 # -- args-- #
-@with_kw mutable struct Args4
+@with_kw mutable struct Args5
     lr::Float64 = 1e-3     # Learning rate 
     N::Int = 3             # Number of perceptrons in hidden layer
+    emb_table::Embeddings.EmbeddingTable = EmbeddingTable(zeros(2,2), zeros(3)) # has to be initialized w/ something later
     embed_len::Int = 50    # Length of vector per each word embedding
     test_len::Int = 100    # Number of unique words in test data 
     word_list_len::Int = 0 # Total number of unique words
     vocab::Array{String, 1} = []  #All the words in the training data
-    throttle::Int = 1     # throttle timeout
+    throttle::Int = 10     # throttle timeout
 end
 
 # -- Helper Functions --#
@@ -74,10 +74,15 @@ end
 
 # --  Recursive Neural Network Functions -- #
 function load_data(file_path)
+    #CSV.read("./data_labeled.csv")
     df = CSV.File(file_path) |> DataFrame! 
     col1 = df[:, 1] 
     col2 = df[:, 2]
-    args = Args4()
+    args = Args5()
+    
+    #Load the  word embeddings and assign back to args
+    eTable = load_embeddings(GloVe)
+    args.emb_table = eTable
     
     dict = Dict{String, Integer}()
     #fill dictionary with words from df
@@ -107,7 +112,7 @@ function load_data(file_path)
 end
 
 function build_model(args)
-    scanner = Chain(Embed(args.vocab, args.embed_len, embed_table), LSTM(args.embed_len, args.N))
+    scanner = Chain(Embed(args.vocab, args.embed_len, args.emb_table), LSTM(args.embed_len, args.N))
     encoder = Dense(args.N, 1, identity)
     return scanner, encoder
 end
@@ -119,9 +124,10 @@ function model(x, scanner, encoder)
 end
 
 
-function training_model(file_path)
+function training_model()
+    f_path = "/Users/rachelwu/Desktop/very_fake_diet_data.csv"
     # Load Data
-    train_data, test_data, arg = load_data(file_path)
+    train_data, test_data, arg = load_data(f_path)
     #create variables for CSV file to track progress
     rounds = 15  
     round_num = []
@@ -134,7 +140,7 @@ function training_model(file_path)
     
     #logitcrossentropy for discrete (classification), MSE for continuous (regression/predictive)
     testloss() = mean(loss(t...) for t in test_data)
-    #evalcb = () -> @show testloss()
+    evalcb = () -> @show testloss()
     
     opt = ADAM(arg.lr)
     ps = params(scanner, encoder)
@@ -160,9 +166,9 @@ function training_model(file_path)
     
     #Create histogram of Results vs Model Prediction -> changes this to  percent accurate later
     histogram(model_results.Reality, bins = 10:5:maximum(model_results.Reality), label  = "Real Values")
-    display(histogram!(model_results.Prediction, bins = 0:1:(maximum(model_results.Prediction)+1), 
+    histogram!(model_results.Prediction, bins = 0:1:(maximum(model_results.Prediction)+1), 
             label = "Model Predictions", xlabel = "Value (Ounces of Milk)", ylabel = "Number of Occurances", 
-            title = "RNN Model Predictions vs Real Value"))
+            title = "RNN Model Predictions vs Real Value")
     
     #Export csv of data of predictions for histogram for outside-function use
     modelAccuracy = DataFrame()
@@ -184,4 +190,4 @@ function training_model(file_path)
 end
 
 # --  Training Model --  # 
-training_model(f_path)
+training_model()
